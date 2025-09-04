@@ -1,0 +1,11 @@
+SaleID,ProductID,ProductName,Quantity,UnitPrice,TotalPrice,SaleDate,CustomerID
+S0001,1,Elegant Nightstand,1,149.99,149.99,2023-10-01,C001
+S0002,3,Comfy Armchair,2,299.99,599.98,2023-10-01,C002
+S0003,2,Minimalist Coffee Table,1,199.99,199.99,2023-10-02,C001
+S0004,5,Modern Bookshelf,1,249.99,249.99,2023-10-03,C003
+S0005,4,Scandinavian Sofa,1,799.99,799.99,2023-10-03,C004
+S0006,1,Elegant Nightstand,2,149.99,299.98,2023-10-04,C005
+S0007,6,Floating Drop Console Bookshelf,1,179.99,179.99,2023-10-05,C002
+S0008,3,Comfy Armchair,1,299.99,299.99,2023-10-05,C006
+S0009,2,Minimalist Coffee Table,1,199.99,199.99,2023-10-06,C007
+S0010,4,Scandinavian Sofa,1,799.99,799.99,2023-10-07,C001

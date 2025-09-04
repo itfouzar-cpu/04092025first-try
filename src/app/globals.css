@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 12.9%; /* Dark Gray */
+    --foreground: 0 0% 98%;
+    --card: 240 10% 12.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 12.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 271 76% 53%; /* Futuristic Purple */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 184 98% 74%; /* Electric Blue */
+    --accent-foreground: 240 10% 3.9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 20.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 184 98% 74%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 12.9%; /* Dark Gray */
+    --foreground: 0 0% 98%;
+    --card: 240 10% 12.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 12.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 271 76% 53%; /* Futuristic Purple */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 184 98% 74%; /* Electric Blue */
+    --accent-foreground: 240 10% 3.9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 20.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 184 98% 74%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+@layer utilities {
+  .bg-animated-gradient {
+    background-size: 200% 200%;
+    background-image: linear-gradient(
+      -45deg,
+      hsl(var(--background)) 0%,
+      hsl(var(--primary) / 0.2) 25%,
+      hsl(var(--background)) 50%,
+      hsl(var(--accent) / 0.2) 75%,
+      hsl(var(--background)) 100%
+    );
+    animation: gradient-animation 15s ease infinite;
+  }
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
