@@ -45,11 +45,18 @@ export type AutoScaleArPlacementOutput = z.infer<
   typeof AutoScaleArPlacementOutputSchema
 >;
 
-const placementPrompt = ai.definePrompt({
-    name: 'arPlacementPrompt',
-    input: { schema: AutoScaleArPlacementInputSchema },
-    output: { schema: AutoScaleArPlacementOutputSchema },
-    prompt: `You are an expert interior designer and spatial computing assistant. Your task is to analyze an image of a room and determine the best position, rotation, and scale to place a virtual 3D object.
+const autoScaleArPlacementFlow = ai.defineFlow(
+  {
+    name: 'autoScaleArPlacementFlow',
+    inputSchema: AutoScaleArPlacementInputSchema,
+    outputSchema: AutoScaleArPlacementOutputSchema,
+  },
+  async (input) => {
+    const placementPrompt = ai.definePrompt({
+        name: 'arPlacementPrompt',
+        input: { schema: AutoScaleArPlacementInputSchema },
+        output: { schema: AutoScaleArPlacementOutputSchema },
+        prompt: `You are an expert interior designer and spatial computing assistant. Your task is to analyze an image of a room and determine the best position, rotation, and scale to place a virtual 3D object.
 
     Analyze the provided scene image to understand the room's layout, existing furniture, floor, and walls.
     
@@ -66,18 +73,8 @@ const placementPrompt = ai.definePrompt({
     Scene Image:
     {{media url=sceneImage}}
     `,
-});
+    });
 
-
-export const autoScaleArPlacementFlow = ai.defineFlow(
-  {
-    name: 'autoScaleArPlacementFlow',
-    inputSchema: AutoScaleArPlacementInputSchema,
-    outputSchema: AutoScaleArPlacementOutputSchema,
-  },
-  async (input) => {
-    // In a real implementation, you might first use a less powerful model
-    // to detect surfaces, then pass that to a more powerful model for placement logic.
     const { output } = await placementPrompt(input);
     return output!;
   }
