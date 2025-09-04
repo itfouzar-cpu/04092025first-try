@@ -1,5 +1,5 @@
-# Firebase Studio
+# Firebase Studio E-Commerce App
 
-This is a NextJS starter in Firebase Studio.
+This is a Next.js e-commerce application built with Firebase Studio. It features product listings, a shopping cart, and an augmented reality (AR) product viewer.
 
-To get started, take a look at src/app/page.tsx.
+This project was bootstrapped and developed with the help of a Google AI assistant.
