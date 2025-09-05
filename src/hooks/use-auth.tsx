@@ -53,6 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginWithGoogle = (): Promise<any> => {
     const provider = new GoogleAuthProvider();
+    // Using signInWithPopup to show the Google login in a popup window.
     return signInWithPopup(auth, provider);
   };
 
