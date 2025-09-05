@@ -21,20 +21,15 @@ let auth: Auth;
 let db: Firestore;
 let storage: Storage;
 
-function initializeFirebase() {
-    if (typeof window !== "undefined") {
-        if (!getApps().length) {
-            app = initializeApp(firebaseConfig);
-        } else {
-            app = getApp();
-        }
-        auth = getAuth(app);
-        db = getFirestore(app);
-        storage = getStorage(app);
+if (typeof window !== "undefined") {
+    if (!getApps().length) {
+        app = initializeApp(firebaseConfig);
+    } else {
+        app = getApp();
     }
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
 }
-
-// Call initializeFirebase on first load
-initializeFirebase();
 
 export { app, db, auth, storage };
