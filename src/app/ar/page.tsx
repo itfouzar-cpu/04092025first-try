@@ -194,9 +194,9 @@ function ARPageComponent() {
                     <Button size="lg" onClick={() => setIsPlacing(true)} disabled={isAiPlacing}>
                         Place Manually
                     </Button>
-                    <Button size="lg" onClick={handleAiPlace} disabled={true} variant="outline" className='bg-background/80'>
+                    <Button size="lg" onClick={handleAiPlace} disabled={isAiPlacing} variant="outline" className='bg-background/80'>
                         {isAiPlacing ? <Loader className="animate-spin mr-2" /> : <Sparkles className="mr-2" />}
-                        AI Place (disabled)
+                        AI Place
                     </Button>
                 </div>
             )}

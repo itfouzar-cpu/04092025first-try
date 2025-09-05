@@ -9,9 +9,7 @@
  */
 
 import { z } from 'zod';
-
-// AI-related imports are commented out because genkit is not installed.
-// import { ai } from '@/ai/genkit';
+import { ai } from '@/ai/genkit';
 
 
 export const AutoScaleArPlacementInputSchema = z.object({
@@ -48,56 +46,44 @@ export type AutoScaleArPlacementOutput = z.infer<
   typeof AutoScaleArPlacementOutputSchema
 >;
 
-// The flow is commented out as genkit is not installed.
-// const autoScaleArPlacementFlow = ai.defineFlow(
-//   {
-//     name: 'autoScaleArPlacementFlow',
-//     inputSchema: AutoScaleArPlacementInputSchema,
-//     outputSchema: AutoScaleArPlacementOutputSchema,
-//   },
-//   async (input) => {
-//     const placementPrompt = ai.definePrompt({
-//         name: 'arPlacementPrompt',
-//         input: { schema: AutoScaleArPlacementInputSchema },
-//         output: { schema: AutoScaleArPlacementOutputSchema },
-//         prompt: `You are an expert interior designer and spatial computing assistant. Your task is to analyze an image of a room and determine the best position, rotation, and scale to place a virtual 3D object.
+const placementPrompt = ai.definePrompt({
+    name: 'arPlacementPrompt',
+    input: { schema: AutoScaleArPlacementInputSchema },
+    output: { schema: AutoScaleArPlacementOutputSchema },
+    prompt: `You are an expert interior designer and spatial computing assistant. Your task is to analyze an image of a room and determine the best position, rotation, and scale to place a virtual 3D object.
 
-//     Analyze the provided scene image to understand the room's layout, existing furniture, floor, and walls.
+    Analyze the provided scene image to understand the room's layout, existing furniture, floor, and walls.
     
-//     The user wants to place a '{{objectType}}' with dimensions (WxHxD): {{objectDimensions.width}}m x {{objectDimensions.height}}m x {{objectDimensions.depth}}m.
+    The user wants to place a '{{objectType}}' with dimensions (WxHxD): {{objectDimensions.width}}m x {{objectDimensions.height}}m x {{objectDimensions.depth}}m.
     
-//     Based on your analysis, provide the optimal 3D coordinates (position), rotation, and a scale factor. The origin (0,0,0) is at the camera's initial position.
+    Based on your analysis, provide the optimal 3D coordinates (position), rotation, and a scale factor. The origin (0,0,0) is at the camera's initial position.
     
-//     - The position should be on a logical surface (e.g., floor for a table, wall for a shelf).
-//     - The rotation should make the object face a natural direction (e.g., a chair facing a desk).
-//     - The scale should be 1.0 unless the room context strongly suggests the object appears too large or small, in which case you can adjust it slightly.
-//     - Provide a high confidence score if you can clearly identify a suitable location.
-//     - Briefly explain your reasoning.
+    - The position should be on a logical surface (e.g., floor for a table, wall for a shelf).
+    - The rotation should make the object face a natural direction (e.g., a chair facing a desk).
+    - The scale should be 1.0 unless the room context strongly suggests the object appears too large or small, in which case you can adjust it slightly.
+    - Provide a high confidence score if you can clearly identify a suitable location.
+    - Briefly explain your reasoning.
     
-//     Scene Image:
-//     {{media url=sceneImage}}
-//     `,
-//     });
+    Scene Image:
+    {{media url=sceneImage}}
+    `,
+});
 
-//     const { output } = await placementPrompt(input);
-//     return output!;
-//   }
-// );
+const autoScaleArPlacementFlow = ai.defineFlow(
+  {
+    name: 'autoScaleArPlacementFlow',
+    inputSchema: AutoScaleArPlacementInputSchema,
+    outputSchema: AutoScaleArPlacementOutputSchema,
+  },
+  async (input) => {
+    const { output } = await placementPrompt(input);
+    return output!;
+  }
+);
 
 // Wrapper function to be called from the client
 export async function autoScaleArPlacement(
   input: AutoScaleArPlacementInput
 ): Promise<AutoScaleArPlacementOutput> {
-  // return await autoScaleArPlacementFlow(input);
-  console.log("AI Placement is currently disabled.");
-  // Return a dummy response
-  return {
-    placement: {
-      position: { x: 0, y: -1, z: -3 },
-      rotation: 0,
-      confidence: 0.5,
-    },
-    scale: 1,
-    reasoning: "AI Placement is temporarily disabled. This is a default position.",
-  }
+  return await autoScaleArPlacementFlow(input);
 }
