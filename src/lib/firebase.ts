@@ -17,26 +17,14 @@ const firebaseConfig = {
 
 // Initialize Firebase
 let app: FirebaseApp;
-let auth: Auth;
-let db: Firestore;
-let storage: Storage;
-
-function initializeFirebase() {
-    if (typeof window !== "undefined") {
-        if (!getApps().length) {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            storage = getStorage(app);
-        } else {
-            app = getApp();
-            auth = getAuth(app);
-            db = getFirestore(app);
-            storage = getStorage(app);
-        }
-    }
+if (getApps().length === 0) {
+    app = initializeApp(firebaseConfig);
+} else {
+    app = getApp();
 }
 
-initializeFirebase();
+const auth: Auth = getAuth(app);
+const db: Firestore = getFirestore(app);
+const storage: Storage = getStorage(app);
 
 export { app, db, auth, storage };
