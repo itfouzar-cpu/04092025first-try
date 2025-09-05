@@ -6,15 +6,13 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader, CameraOff, ArrowLeft, Move, Rotate3d, Scale, Sparkles } from 'lucide-react';
+import { Loader, CameraOff, ArrowLeft, Move, Rotate3d, Scale } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import Link from 'next/link';
 import { Canvas } from '@react-three/fiber';
 import { Box, OrbitControls } from '@react-three/drei';
 import dynamic from 'next/dynamic';
-import { autoScaleArPlacement, type AutoScaleArPlacementInput } from '@/ai/flows/auto-scale-ar-placement';
 import { getProductById, type Product } from '@/services/product-service';
-import { Card, CardContent } from '@/components/ui/card';
 
 function Model(props: ComponentProps<typeof Box>) {
     const ref = useRef<any>();
@@ -39,8 +37,6 @@ function ARPageComponent() {
     const [rotation, setRotation] = useState<[number, number, number]>([0, 0, 0]);
     const [scale, setScale] = useState(1);
     const [isPlacing, setIsPlacing] = useState(false);
-    const [isAiPlacing, setIsAiPlacing] = useState(false);
-    const [aiReasoning, setAiReasoning] = useState('');
     const [controlMode, setControlMode] = useState<'translate' | 'rotate' | 'scale'>('translate');
     
     useEffect(() => {
@@ -82,52 +78,6 @@ function ARPageComponent() {
         getCameraPermission();
         fetchProduct();
     }, [toast, modelId]);
-
-
-    const handleAiPlace = async () => {
-        if (!videoRef.current || !product) return;
-        setIsAiPlacing(true);
-        setAiReasoning('');
-
-        const canvas = document.createElement('canvas');
-        canvas.width = videoRef.current.videoWidth;
-        canvas.height = videoRef.current.videoHeight;
-        const ctx = canvas.getContext('2d');
-        if(!ctx) {
-            setIsAiPlacing(false);
-            return;
-        }
-
-        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-        const sceneImage = canvas.toDataURL('image/jpeg');
-
-        try {
-            const input: AutoScaleArPlacementInput = {
-                sceneImage,
-                objectType: product.name,
-                objectDimensions: product.dimensions,
-            }
-            const result = await autoScaleArPlacement(input);
-            setPosition([result.placement.position.x, result.placement.position.y, result.placement.position.z]);
-            setRotation([0, result.placement.rotation, 0]);
-            setScale(result.scale);
-            setAiReasoning(result.reasoning);
-            setIsPlacing(true);
-            toast({
-                title: "AI Placement Complete",
-                description: "The object has been placed in the scene."
-            })
-        } catch (error) {
-            console.error('AI placement failed:', error);
-            toast({
-                variant: 'destructive',
-                title: 'AI Placement Failed',
-                description: 'Could not automatically place the object. Please try again.',
-            });
-        } finally {
-            setIsAiPlacing(false);
-        }
-    };
 
 
     const handleSliderChange = (value: number[]) => {
@@ -191,24 +141,9 @@ function ARPageComponent() {
             
             {hasCameraPermission && !isPlacing && (
                  <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col gap-4 items-center">
-                    <Button size="lg" onClick={() => setIsPlacing(true)} disabled={isAiPlacing}>
-                        Place Manually
+                    <Button size="lg" onClick={() => setIsPlacing(true)}>
+                        Place Object
                     </Button>
-                    <Button size="lg" onClick={handleAiPlace} disabled={isAiPlacing} variant="outline" className='bg-background/80'>
-                        {isAiPlacing ? <Loader className="animate-spin mr-2" /> : <Sparkles className="mr-2" />}
-                        AI Place
-                    </Button>
-                </div>
-            )}
-            
-            {aiReasoning && (
-                <div className="absolute top-20 left-1/2 -translate-x-1/2 z-20 w-full max-w-md px-4">
-                    <Card className="bg-background/80 text-foreground">
-                        <CardContent className="p-3">
-                            <p className="text-xs font-medium">✨ AI Suggestion</p>
-                            <p className="text-xs text-muted-foreground">{aiReasoning}</p>
-                        </CardContent>
-                    </Card>
                 </div>
             )}
 
