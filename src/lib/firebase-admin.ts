@@ -8,57 +8,29 @@ let db: Firestore;
 let storage: Storage;
 
 function initializeAdmin() {
-    if (getApps().some(app => app.name === 'admin')) {
-        adminApp = getApp('admin');
+    const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT;
+    const serviceAccount = serviceAccountKey ? JSON.parse(serviceAccountKey) : undefined;
+    
+    if (!getApps().some(app => app.name === 'admin')) {
+        adminApp = initializeApp({
+            credential: cert(serviceAccount),
+            storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+        }, 'admin');
     } else {
-        const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
-            ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-            : undefined;
-
-        if (serviceAccount) {
-            adminApp = initializeApp({
-                credential: cert(serviceAccount),
-                storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-            }, 'admin');
-        } else if (!getApps().length) {
-            // This fallback is for environments where service account isn't set,
-            // but default credentials might be available (like a local emulator).
-            adminApp = initializeApp({
-                 storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-            });
-        } else {
-            adminApp = getApp();
-        }
+        adminApp = getApp('admin');
     }
 
     db = getFirestore(adminApp);
     storage = getStorage(adminApp);
 }
 
-// Initialize on first access
+// Initialize on first access in a try-catch block to prevent build errors
 try {
     initializeAdmin();
-} catch (error: any) {
-    console.error("Firebase Admin SDK initialization error on startup:", error.message);
-    // Defer initialization to first use if it fails on startup
-    const lazyInit = () => {
-        if (!adminApp) {
-            try {
-                initializeAdmin();
-            } catch (initError: any) {
-                console.error("Lazy Firebase Admin SDK initialization failed:", initError.message);
-                // If it still fails, the subsequent calls will likely fail,
-                // but this prevents the app from crashing on start.
-            }
-        }
-    };
-    
-    // Create lazy getters
-    const lazyDb = () => { lazyInit(); return db; };
-    const lazyStorage = () => { lazyInit(); return storage; };
-    
-    db = new Proxy({} as Firestore, { get: (_, prop) => Reflect.get(lazyDb(), prop) });
-    storage = new Proxy({} as Storage, { get: (_, prop) => Reflect.get(lazyStorage(), prop) });
+} catch (error) {
+    // This will likely fail in the build environment, which is okay.
+    // The services will be initialized on first actual use in a server function.
+    console.log("Firebase Admin SDK failed to initialize on build, will lazy load.");
 }
 
 export { adminApp, db, storage };

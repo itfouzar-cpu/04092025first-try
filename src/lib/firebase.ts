@@ -4,8 +4,6 @@ import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import { getAuth, type Auth } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
 import { getStorage, type Storage } from "firebase/storage";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -23,15 +21,20 @@ let auth: Auth;
 let db: Firestore;
 let storage: Storage;
 
-if (typeof window !== "undefined") {
-    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    auth = getAuth(app);
-    db = getFirestore(app);
-    storage = getStorage(app);
-} else {
-    // During server-side rendering or build, these will be undefined
-    // This is handled by using firebase-admin for server-side operations
+function initializeFirebase() {
+    if (typeof window !== "undefined") {
+        if (!getApps().length) {
+            app = initializeApp(firebaseConfig);
+        } else {
+            app = getApp();
+        }
+        auth = getAuth(app);
+        db = getFirestore(app);
+        storage = getStorage(app);
+    }
 }
 
+// Call initializeFirebase on first load
+initializeFirebase();
 
 export { app, db, auth, storage };
