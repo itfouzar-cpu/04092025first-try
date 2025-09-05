@@ -14,14 +14,17 @@ import {
   signInWithEmailAndPassword,
   signOut,
   type User,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase'; // Ensure this path is correct
+import { auth } from '@/lib/firebase'; 
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   register: (email: string, pass: string) => Promise<any>;
   login: (email: string, pass: string) => Promise<any>;
+  loginWithGoogle: () => Promise<any>;
   logout: () => Promise<void>;
 }
 
@@ -32,7 +35,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // onAuthStateChanged initializes and then listens, so it's safe here.
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
@@ -49,6 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
+  const loginWithGoogle = (): Promise<any> => {
+    const provider = new GoogleAuthProvider();
+    return signInWithPopup(auth, provider);
+  };
+
   const logout = (): Promise<void> => {
     return signOut(auth);
   };
@@ -58,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     register,
     login,
+    loginWithGoogle,
     logout,
   };
 

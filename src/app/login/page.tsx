@@ -9,7 +9,7 @@ import type { z } from 'zod';
 import type { authSchema } from '@/components/auth-form';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -30,9 +30,26 @@ export default function LoginPage() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      await loginWithGoogle();
+      toast({
+        title: 'Success!',
+        description: "You've been successfully logged in with Google.",
+      });
+      router.push('/products');
+    } catch (error: any) {
+        toast({
+            variant: 'destructive',
+            title: 'Google Sign-In Failed',
+            description: error.message || 'Could not sign in with Google. Please try again.',
+        });
+    }
+  }
+
   return (
     <div className="container mx-auto flex items-center justify-center min-h-[calc(100vh-200px)]">
-      <AuthForm type="login" onSubmit={handleLogin} />
+      <AuthForm type="login" onSubmit={handleLogin} onGoogleSignIn={handleGoogleSignIn} />
     </div>
   );
 }
