@@ -15,7 +15,7 @@ import {
   signOut,
   type User,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase'; 
 
@@ -53,8 +53,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginWithGoogle = (): Promise<any> => {
     const provider = new GoogleAuthProvider();
-    // Using signInWithPopup to show the Google login in a popup window.
-    return signInWithPopup(auth, provider);
+    // Using signInWithRedirect to avoid popup blockers.
+    return signInWithRedirect(auth, provider);
   };
 
   const logout = (): Promise<void> => {
